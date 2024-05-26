@@ -1,12 +1,13 @@
 from datetime import datetime
+from src.head_hunter import HeadHunterVacancies
 
 
 class Vacancy:
 
     def __init__(self, vacancy_id: int, employer_id: int, name: str,
-                 salary_from: int, salary_to: int, requirement: str,
-                 responsibility: str, employment: str, address: str,
-                 currency: str, publication_date: str, link_to_vacancy: str):
+                 salary_from: int, salary_to: int, currency: str,
+                 requirement: str, responsibility: str, employment: str,
+                 address: str, publication_date: str, link_to_vacancy: str):
         """
         Конструктор класса Vacancies.
         :param vacancy_id: ID вакансии.
@@ -33,52 +34,45 @@ class Vacancy:
         self.responsibility = responsibility
         self.employment = employment
         self.address = address
-        self.publication_date = publication_date
+        self.publication_date = self._date_formatting(publication_date)
         self.link_to_vacancy = link_to_vacancy
 
     @classmethod
-    def convert_to_vacancy(cls, list_vacancies):
+    def convert_to_vacancy(cls, list_vacancies: list) -> list:
         """
-        Класс метод для создания экземпляров класса из словарей формата Response,
-        получаемых с API hh.ru
+        Класс метод для создания экземпляров класса Vacancy из словарей формата
+        Response, получаемых с API hh.ru
         """
         returned_list = []
         for vacancy in list_vacancies:
             vacancy_id = vacancy['id']
-            name = Vacancy.check_data_str(vacancy['name'])
-            salary_from = Vacancy.check_data_int(
-                vacancy.get('salary').get('from'))
-            salary_to = Vacancy.check_data_int(vacancy.get('salary').get('to'))
-            currency = Vacancy.check_data_str(
-                vacancy.get('salary').get('currency'))
-            employer_id = Vacancy.check_data_int(
-                vacancy.get('employer').get('id'))
-            requirement = Vacancy.check_data_str(
-                vacancy.get('snippet').get('requirement'))
-            responsibility = Vacancy.check_data_str(
-                vacancy.get('snippet').get('responsibility'))
-            publication_date = Vacancy._date_formatting(
-                (vacancy.get('published_at'), {}) or None)
-            employment = Vacancy.check_data_str(
-                vacancy.get('employment').get('name'))
-            address = Vacancy.check_data_str(vacancy.get('address').get('raw'))
-            link_to_vacancy = Vacancy.check_data_str(
-                vacancy.get('alternate_url'))
+            employer_id = vacancy.get('employer')['id']
+            name = vacancy.get('name')
+            salary_from = (vacancy.get('salary') or {}).get('from')
+            salary_to = (vacancy.get('salary') or {}).get('to')
+            currency = (vacancy.get('salary') or {}).get('currency')
+            requirement = vacancy.get('snippet').get('requirement')
+            responsibility = vacancy.get('snippet').get('responsibility')
+            employment = (vacancy.get('employment').get('name'))
+            address = (vacancy.get('address') or {}).get('raw')
+            publication_date = (
+                (vacancy.get('published_at') or 'Не найдено'))
+            link_to_vacancy = (vacancy.get('alternate_url'))
 
-            vacancy_object = cls(vacancy_id, name, salary_from, salary_to,
-                                 currency, employer_id, requirement,
-                                 responsibility, publication_date, employment,
-                                 address, link_to_vacancy)
+            vacancy_object = cls(vacancy_id, employer_id, name, salary_from,
+                                 salary_to, currency, requirement,
+                                 responsibility, employment, address,
+                                 publication_date, link_to_vacancy)
 
             returned_list.append(vacancy_object)
-            return vacancy_object
+        return returned_list
 
     @staticmethod
-    def check_data_str(value) -> str or None:
+    def check_data_str(value) -> str:
         """Валидатор для проверки строковых значений"""
         if value:
             return value
-        return None
+        return 'Не найдено'
 
     @staticmethod
     def check_data_int(value) -> int:
@@ -99,7 +93,7 @@ class Vacancy:
                 self.address, self.link_to_vacancy]
 
     @staticmethod
-    def _date_formatting(date) -> datetime.strftime:
+    def _date_formatting(date):
         """
         Метод для конвертации даты из формата "2024-05-17T18:00:26+0300"
         в "17.05.2024 18:00"
@@ -109,7 +103,7 @@ class Vacancy:
         date_format = date_format.strftime('%d.%m.%Y %H:%M')
         return date_format
 
-    def __print_salary(self) -> str or None:
+    def __print_salary(self) -> str:
         """
         Метод для корректного выведения заработной платы(ЗП) пользователю.
         Если ЗП указана в объявлении с диапазоном, тогда
@@ -124,7 +118,7 @@ class Vacancy:
         elif not {self.salary_from} and {self.salary_to}:
             return f'{self.salary_to} {self.currency}'
         else:
-            return None
+            return 'Не найдено'
 
     def __str__(self) -> str:
         """ Метод для вывода информации класса Vacancy"""
@@ -142,7 +136,7 @@ class Vacancy:
     def __repr__(self) -> str:
         """ Метод для отладки класса Vacancy"""
         return (
-            f'\n{self.__class__.__name__}:\n'
+            f'\n\n{self.__class__.__name__}:\n'
             f'ID вакансии: {self.vacancy_id}\n'
             f'ID компании: {self.employer_id}\n'
             f'Должность: {self.name}\n'
@@ -153,5 +147,12 @@ class Vacancy:
             f'Занятость: {self.employment}\n'
             f'Адрес: {self.address}\n'
             f'Дата публикации вакансии: {self.publication_date}\n'
-            f'Ссылка на вакансию: {self.link_to_vacancy}\n'
+            f'Ссылка на вакансию: {self.link_to_vacancy}'
         )
+
+
+if __name__ == '__main__':
+    hh_api = HeadHunterVacancies()
+    list_emp1 = Vacancy.convert_to_vacancy(hh_api.load_vacancies(1740))
+
+    print(list_emp1)
