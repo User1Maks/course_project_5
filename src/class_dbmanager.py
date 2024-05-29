@@ -1,13 +1,19 @@
 import psycopg2
 from config import config
+from src.clasess_abstract import ABCDBManager, WorkDBManager
 
 
-class DBManager:
-    """Класс для работы с базой данных"""
+class CreateDBManager(ABCDBManager):
+    """Класс для создания базы данных, таблиц и их заполнение данными о
+    вакансиях с сайта hh.ru"""
 
-    def __init__(self, dbname: str, params: dict):
+    def __init__(self, dbname: str = 'cw5'):
+        """
+        Конструктор класса CreateDBManager
+        :param dbname: название базы данных, по умолчанию cw5
+        """
         self.dbname = dbname
-        self.params = params
+        self.params = config()
         self._create_database()
         self.conn = psycopg2.connect(dbname=dbname, **self.params)
         self.conn.autocommit = True
@@ -80,7 +86,7 @@ class DBManager:
             """)
 
     def insert_data(self, employers: list, vacancies: list) -> None:
-        """Заполнение таблиц данными"""
+        """Заполнение таблиц employers и vacancies данными"""
 
         self.conn = self.conn
         self.cur = self.conn.cursor()
@@ -106,8 +112,21 @@ class DBManager:
                     %s, %s)""",
                                      vacancy.to_list())
             except psycopg2.errors.UniqueViolation:
-                print(f'Вакансии с повторяющимися ID. Данные вакансии'
+                print(f'Вакансии с повторяющимися ID. Данные вакансии '
                       f'не будут записаны в БД:{vacancy}')
+
+
+class DBManager(WorkDBManager):
+    """
+    Класс для работы с БД
+    """
+
+    def __init__(self, dbname: str = 'cw5'):
+        self.dbname = dbname
+        self.params = config()
+        self.conn = psycopg2.connect(dbname=dbname, **self.params)
+        self.conn.autocommit = True
+        self.cur = self.conn.cursor()
 
     def get_companies_and_vacancies_count(self):
         """Метод для получения списка всех компаний и количество вакансий у
@@ -174,6 +193,5 @@ class DBManager:
 
 
 if __name__ == '__main__':
-    param = config()
-    db_manager = DBManager('cw5', param)
+    db_manager = DBManager()
     print(db_manager.get_vacancies_with_keyword('python'))

@@ -1,7 +1,9 @@
 from datetime import datetime
 
+from src.clasess_abstract import ABCVacancy
 
-class Vacancy:
+
+class Vacancy(ABCVacancy):
 
     def __init__(self, vacancy_id: int, employer_id: int, name: str,
                  salary_from: int, salary_to: int, currency: str,
@@ -131,6 +133,48 @@ class Vacancy:
             f'Дата публикации вакансии: {self.publication_date}\n'
             f'Ссылка на вакансию: {self.link_to_vacancy}\n'
         )
+
+    def __eq__(self, other):  # – для равенства ==
+        if not isinstance(other, (Vacancy, int)):
+            raise TypeError("Операнд справа должен иметь тип int или Vacancy")
+        if type(other) is type(self):
+            return self.salary_from == other.salary_from
+        return self.salary_from == other
+
+    def __ne__(self, other):  # – для неравенства !=
+        if not isinstance(other, (Vacancy, int)):
+            raise TypeError("Операнд справа должен иметь тип int или Vacancy")
+        if type(other) is type(self):
+            return self.salary_from != other.salary_from
+        return self.salary_from != other
+
+    def __lt__(self, other):  # – для оператора меньше <
+        if not isinstance(other, (Vacancy, int)):
+            raise TypeError("Операнд справа должен иметь тип int или Vacancy")
+        if type(other) is type(self):
+            return self.salary_from < other.salary_from
+        return self.salary_from < other
+
+    def __le__(self, other):  # – для оператора меньше или равно <=
+        if not isinstance(other, (Vacancy, int)):
+            raise TypeError("Операнд справа должен иметь тип int или Vacancy")
+        if type(other) is type(self):
+            return self.salary_from <= other.salary_from
+        return self.salary_from <= other
+
+    def __gt__(self, other):  # – для оператора больше >
+        if not isinstance(other, (Vacancy, int)):
+            raise TypeError("Операнд справа должен иметь тип int или Vacancy")
+        if type(other) is type(self):
+            return self.salary_from > other.salary_from
+        return self.salary_from > other
+
+    def __ge__(self, other):  # – для оператора больше или равно >=
+        if not isinstance(other, (Vacancy, int)):
+            raise TypeError("Операнд справа должен иметь тип int или Vacancy")
+        if type(other) is type(self):
+            return self.salary_from >= other.salary_from
+        return self.salary_from >= other
 
     def __repr__(self) -> str:
         """ Метод для отладки класса Vacancy"""

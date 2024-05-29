@@ -1,7 +1,9 @@
 import requests
 
+from src.clasess_abstract import ApiEmployers, ApiVacancies
 
-class HeadHunterEmployers:
+
+class HeadHunterEmployers(ApiEmployers):
     """
     Класс для работы с API сайта HeadHunter. Получения данных о работодателях
     """
@@ -32,7 +34,7 @@ class HeadHunterEmployers:
         return self.employers
 
 
-class HeadHunterVacancies:
+class HeadHunterVacancies(ApiVacancies):
     """Класс для работы с API сайта HeadHunter. Получения данных о вакансиях"""
 
     def __init__(self):

@@ -1,4 +1,7 @@
-class Employers:
+from src.clasess_abstract import ABCEmployers
+
+
+class Employers(ABCEmployers):
 
     def __init__(self, employers_id: int, name: str, description: str,
                  alternate_url: str, vacancies_url: str, industries: str):

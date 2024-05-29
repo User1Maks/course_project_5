@@ -1,9 +1,8 @@
 from src.class_employers import Employers
 from src.class_vacancy import Vacancy
 from src.head_hunter import HeadHunterEmployers, HeadHunterVacancies
-from src.class_dbmanager import DBManager
-from utils.functions import default_employers_id
-from config import config
+from src.class_dbmanager import CreateDBManager
+from utils.functions import default_employers_id, working_with_a_database
 
 
 def main():
@@ -24,16 +23,17 @@ def main():
     list_vacancies = Vacancy.convert_to_vacancy(
         hh_api_vacancies.load_vacancies(list_employers_api))
 
-    # Создание БД и таблиц
-    params = config()
-    user_input_db = input('Введите название БД: ').strip().lower()
-    db_manager = DBManager(user_input_db, params)
+    # Создание БД по умолчанию cw5 и таблиц employers и vacancies
+    db_manager = CreateDBManager()
 
     # Заполнение таблиц данными
     db_manager.insert_data(list_employers, list_vacancies)
 
     # Закрытие курсора
     db_manager.conn_close()
+
+    # Работа с БД
+    working_with_a_database()
 
 
 if __name__ == '__main__':
