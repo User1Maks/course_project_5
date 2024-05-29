@@ -11,8 +11,7 @@
 [postgresql]\
 host=127.0.0.1\
 user= your user\
-password= your\
-password\
+password= your password\
 port=5432
 
 
