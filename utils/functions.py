@@ -85,6 +85,8 @@ def working_with_a_database():
                       f'------------------------------------------')
         elif user_input == '6':
             break
+    db_manager.cur.close()
+    db_manager.conn.close()
 
 
 if __name__ == '__main__':

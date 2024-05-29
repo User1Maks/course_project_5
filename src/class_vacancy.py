@@ -1,6 +1,7 @@
 from datetime import datetime
-
 from src.clasess_abstract import ABCVacancy
+from src.head_hunter import HeadHunterVacancies
+from utils.functions import default_employers_id
 
 
 class Vacancy(ABCVacancy):
@@ -192,3 +193,18 @@ class Vacancy(ABCVacancy):
             f'Дата публикации вакансии: {self.publication_date}\n'
             f'Ссылка на вакансию: {self.link_to_vacancy}'
         )
+
+
+if __name__ == 'main':
+
+    # Создание экземпляра класса для работы с API сайтов с вакансиями
+    hh_api = HeadHunterVacancies()
+
+    # Загружаем список 10 API по умолчанию
+    list_api = default_employers_id()
+
+    # Получение вакансий с hh.ru в формате JSON
+    hh_vacancies = hh_api.load_vacancies(list_api)
+
+    list_vacancy = Vacancy.convert_to_vacancy(hh_vacancies)
+    print(str(list_vacancy))

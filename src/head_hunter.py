@@ -1,5 +1,4 @@
 import requests
-
 from src.clasess_abstract import ApiEmployers, ApiVacancies
 
 
@@ -61,3 +60,7 @@ class HeadHunterVacancies(ApiVacancies):
                 self.vacancies.extend(vacancies)
                 self.params['page'] += 1
         return self.vacancies
+
+
+if __name__ == 'main__':
+    print(HeadHunterEmployers().load_employers([1740, 78638]))
