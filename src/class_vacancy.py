@@ -1,5 +1,4 @@
 from datetime import datetime
-from src.head_hunter import HeadHunterVacancies
 
 
 class Vacancy:
@@ -55,8 +54,7 @@ class Vacancy:
             responsibility = vacancy.get('snippet').get('responsibility')
             employment = (vacancy.get('employment').get('name'))
             address = (vacancy.get('address') or {}).get('raw')
-            publication_date = (
-                (vacancy.get('published_at') or 'Не найдено'))
+            publication_date = (vacancy.get('published_at', {}) or 'Не найдено')
             link_to_vacancy = (vacancy.get('alternate_url'))
 
             vacancy_object = cls(vacancy_id, employer_id, name, salary_from,
@@ -89,17 +87,18 @@ class Vacancy:
 
         return [self.vacancy_id, self.employer_id, self.name, self.salary_from,
                 self.salary_to, self.currency, self.requirement,
-                self.responsibility, self.publication_date, self.employment,
-                self.address, self.link_to_vacancy]
+                self.responsibility, self.employment, self.address,
+                self.publication_date, self.link_to_vacancy]
 
     @staticmethod
-    def _date_formatting(date):
+    def _date_formatting(data):
         """
         Метод для конвертации даты из формата "2024-05-17T18:00:26+0300"
         в "17.05.2024 18:00"
         :return: datetime
         """
-        date_format = datetime.fromisoformat(date)
+
+        date_format = datetime.fromisoformat(data)
         date_format = date_format.strftime('%d.%m.%Y %H:%M')
         return date_format
 
@@ -149,10 +148,3 @@ class Vacancy:
             f'Дата публикации вакансии: {self.publication_date}\n'
             f'Ссылка на вакансию: {self.link_to_vacancy}'
         )
-
-
-if __name__ == '__main__':
-    hh_api = HeadHunterVacancies()
-    list_emp1 = Vacancy.convert_to_vacancy(hh_api.load_vacancies(1740))
-
-    print(list_emp1)

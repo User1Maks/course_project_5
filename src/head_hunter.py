@@ -1,7 +1,4 @@
-from pprint import pprint
 import requests
-
-from utils.functions import default_employers_id
 
 
 class HeadHunterEmployers:
@@ -29,6 +26,8 @@ class HeadHunterEmployers:
                                     params=self.params)
             employer = response.json()
             self.employers.append(employer)
+            print(f'Выполняется парсинг компании: {employer["name"]}')
+        print(f'Выполняется загрузка вакансий...')
 
         return self.employers
 
@@ -60,12 +59,3 @@ class HeadHunterVacancies:
                 self.vacancies.extend(vacancies)
                 self.params['page'] += 1
         return self.vacancies
-
-
-if __name__ == "__main__":
-    # list_emp1 = HeadHunterVacancies().load_vacancies(1740)[:2]
-    # pprint(list_emp1[0])
-
-    list_ids = default_employers_id()
-    list_emp2 = HeadHunterEmployers().load_employers(list_ids)
-    pprint(list_emp2)

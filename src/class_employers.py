@@ -1,7 +1,3 @@
-from src.head_hunter import HeadHunterEmployers
-from utils.functions import default_employers_id
-
-
 class Employers:
 
     def __init__(self, employers_id: int, name: str, description: str,
@@ -92,10 +88,3 @@ class Employers:
             f'Ссылка на вакансии компании: {self.vacancies_url}\n'
             f'Отрасли компании: {self.industries}'
         )
-
-
-if __name__ == '__main__':
-    hh_api = HeadHunterEmployers()
-    list_ids = default_employers_id()
-    list_emp1 = Employers.convert_to_employer(hh_api.load_employers(list_ids))
-    print(list_emp1)
