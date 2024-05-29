@@ -8,10 +8,11 @@
   подключения к базе данных в основном каталоге проекта.
   В файл необходимо указать информацию для подключения.
 
-[postgresql]
-host=127.0.0.1
-user= your user
-password= your password
+[postgresql]\
+host=127.0.0.1\
+user= your user\
+password= your\
+password\
 port=5432
 
 
